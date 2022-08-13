@@ -23,11 +23,19 @@
 - 意見・提案などは常時募集中である。気軽に送っていただきたい。
 
 # 関連リポジトリ
+- USI-Xプロトコル(オセロ版)に関するサンプルプログラムの置き場: https://github.com/YuaHyodo/USI-X_Othello_Samples
+
 - オンライン対局用プロトコル、Online Othello Protocolのリポジトリ: https://github.com/YuaHyodo/online_othello_protocol
+
 - Online Othello Protocol対応の簡易対局サーバー、Ari-Othello-Serverのリポジトリ: https://github.com/YuaHyodo/Ari-Othello-Server
+
 - USI-XエンジンとOnline Othello Protocolサーバーを中継するGUIを持ったツール、Azisai_Othello_GUIのリポジトリ: https://github.com/YuaHyodo/Azisai_Othello_GUI
+
 - USI-Xエンジンであるpython-dlothello、Azisai、random_kunとその関連物のリポジトリ: https://github.com/YuaHyodo/python-dlothello
+
 - sfenをグラフィカルに表示してくれるツール、Othello sfen viewerのリポジトリ: https://github.com/YuaHyodo/Othello_sfen_viewer
+
+- USI-XエンジンをPythonプログラムから呼び出すためのツール: https://github.com/YuaHyodo/USI_X_Engine_Bridge
 
 # 関連リンク
 - USI-Xプロトコルを提案している、やねうらお氏のブログ記事: http://yaneuraou.yaneu.com/2022/06/07/standard-communication-protocol-for-games/
