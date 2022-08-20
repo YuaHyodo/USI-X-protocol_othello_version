@@ -10,10 +10,10 @@ snail_reversi( https://github.com/YuaHyodo/snail_reversi )を使う予定です�
 - 3: 概要・導入
 - 4: USI-Xの利点
 - 5: サンプルコードを使って最初の1歩を踏み出してみよう
-- 6: ちょっと発展したAI
+- 6: 5章のエンジンを少し発展させる
 
 # 概要・導入
-- USI-X(正式名称: USI-X Protocol Othello Version)は、オセロAI(リバーシAI)のための通信プロトコルです。(USI-Xについての詳細はReadmeファイル、仕様書を確認の事)
+- USI-X(正式名称: USI-X Protocol Othello Version)は、オセロAI(リバーシAI)のための通信プロトコルです。(USI-Xについての詳細はReadmeファイル、仕様書を確認してください)
 - 以降、USI-Xに対応したオセロAIの事をUSI-Xエンジンと呼び、対応する利点や作り方、改良のヒントなどについて書きます。
 
 # USI-Xの利点
