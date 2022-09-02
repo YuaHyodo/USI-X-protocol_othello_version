@@ -150,7 +150,7 @@ random.choice(legal_moves)でランダムに1つ合法手を選んでいます�
 - サンプルコードをサクッと解説します。
 - 完成品はこちら: https://github.com/YuaHyodo/USI-X_Othello_Samples/blob/main/MiniMax_Sample.py
 
-## 7-2-1: 全体の解説
+### 7-2-1: 全体の解説
 - MiniMax法は、「自分は自分の評価値が最大になるように行動し、相手は相手の評価値が最大になるように行動する」という考えで探索を行います。
 - オセロは、二人零和有限確定完全情報ゲーム(2人でプレイし、お互いの利害を足すと0になり、有限手で勝負がつき、ランダム要素がなく、ゲームに関するすべての情報を得ることができるゲーム)なので、相手の評価値は自分の評価値を反転したものになっています。この特性を利用します。
 <br>
@@ -186,7 +186,7 @@ random.choice(legal_moves)でランダムに1つ合法手を選んでいます�
 - その他、MiniMax法での「調べなくても問題ないと分かっている部分」を調べないための処理(αβ枝刈り)、αβ枝刈りを多く発生させるための処理(move ordering)なども入れています。
 
 
-## 7-2-2: 各部分の解説
+### 7-2-2: 各部分の解説
 ```
 class Eval:
     def __init__(self, path):
@@ -391,6 +391,75 @@ class MiniMax(base):
 
 
 ## 7-3: サンプルコードの解説(評価関数)
+- サンプルコードをサクッと解説します。
+- 完成品はこちら: https://github.com/YuaHyodo/USI-X_Othello_Samples/blob/main/Square_Weight_Eval_v1.py
+
+### 7-3-1: 全体の解説
+- 今回の評価関数は、
+```
+1: そのマスに手番側の石が乗っているなら、評価値にそのマスの点数を足す
+2: そのマスに非手番側の石が乗っているなら、評価値からそのマスの点数を引く
+3: 1, 2をすべてのマスに対して行う
+```
+というルールで評価値を求めます。
+また、評価値は出力される前にtanh関数に通されます。
+- マスの重みくらい人力で調整できますが、ここはロマンを追い求めて機械学習で調整します。
+- 具体的には、「各マスの状態を入力にした、活性関数がtanhのニューロン」のパラメータを調整する事でマスの重みを求めます。
+- 「ニューロン」はニューラルネット(最近流行りのディープラーニングで有名なやつ)を構成しているモノです。なのでこいつは最小サイズのニューラルネットと言えると思います。
+
+### 7-3-2: ベース部の解説
+- 「評価関数ベース」を用意したので、こちらを利用して評価関数を作ります。
+- 評価関数ベースはこちら: https://github.com/YuaHyodo/USI-X_Othello_Samples/blob/main/Eval_base_v1.py
+- この章を読む人々には長ったらしい解説は不要だと思うので、重要な部分のみ説明します。
+- 具体的な処理の流れは、```set_board関数で評価関数の脳内盤をセットした後、Eval関数で実際に評価値の計算を行う```という感じです。
+
+### 7-3-3: 推論部の解説
+```
+    def input_feature(self, sfen=None):
+        if sfen == None:
+            sfen = self.board.return_sfen()
+        if sfen in self.features_dict.keys():
+            return self.features_dict[sfen]
+        output = [0] * 64
+        stones = self.board.make_simple_feature()
+        for i in range(8):
+            for j in range(8):
+                output[i * 8 + j] = (stones[0][i][j] - stones[1][i][j])
+        self.features_dict[sfen] = output
+        return output
+```
+- この関数は、sfenを評価関数の入力に変換するものです。
+- 自分の石が置いてある場所は1、相手の石が置いてある場所は-1、石がない場所は0になっている長さ64の1次元配列を出力します。
+<br>
+
+```
+    def predict(self, inputs):
+        output = 0
+        for i in range(len(inputs)):
+            output += (inputs[i] * self.param[0][i])
+        output -= self.param[1]
+        return self.activation(output)
+```
+- これが推論を行う関数です。
+- 入力(inputs)とマスの重み(param[0])のドット積を計算した後、バイアス(param[1])を引いて、さらにそれを活性化関数(activation、ここではtanh関数)に入れた値を返します。
+- ほかの部分にも言えますが、numpyに置き換えると結構早くなると思います。
+<br>
+
+```
+    def Eval(self):
+        sfen = self.board.return_sfen()
+        if sfen in self.scores_dict.keys():
+            return self.scores_dict[sfen]
+        score = self.predict(self.input_feature())
+        self.scores_dict[sfen] = score
+        return score
+```
+- 本体の部分です。
+- score_dictは、sfenがKeyで評価値がValueのdictです。1回評価値を求めた局面を覚えておき、次回以降に調べるときは保存した値を返す事で高速化を図っています。
+- また、self.scores_dict[sfen] = scoreで、調べた後の評価値を登録しています。
+<br>
+
+### 7-3-4: 学習部の解説
 - 準備中
 
 ## 7-4: 強さ
